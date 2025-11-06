@@ -1,27 +1,24 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Run HTML Linter
+    - name: Validate HTML
       uses: Cyb3r-Jak3/html5validator-action@v3
       with:
         root: ./
-        log_level: INFO
 
-    - name: Upload HTML report (artifact)
-      uses: actions/upload-artifact@v4
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
       with:
-        name: html-lint-report
-        path: .
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
